@@ -29,14 +29,45 @@ On Windows:
 
 4. Install requirements
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
+```
+5. Download kaggle dataset from
+```
+https://www.kaggle.com/alxmamaev/flowers-recognition
 ```
 
-5. Run crawler
+6. Move files from **[download_path]/flowers** to **images/kaggle**
+```
+Should look like this:
+.
++-- images
+    +-- kaggle
+        +-- daisy
+        +-- dandelion
+        +-- rose
+        +-- sunflower
+        +-- tulip
+```
+
+7. A. Run all scripts
+```
+On macOS and Linux:
+./run_all
+
+On Windows:
+Someone with windows have to chceck, maybe the same
+```
+
+7. B. Or run python scripts separately
 ```
 On macOS and Linux:
 python3 google_graphics_clawler.py -q <query> -o <output-dir> -n <min-photos>
 
 On Windows:
 py google_graphics_clawler.py -q <query> -o <output-dir> -n <min-photos>
+```
+
+8. Decativate python environment
+```
+deactivate
 ```
