@@ -51,13 +51,13 @@ def get_color_coverage(filename):
             cv2.waitKey(0)
     return np.round(color_coverage*100, 2)
 
-print("Start generating raport ...: " + args.output)
+print("Start generating report ...: " + args.output)
 
 if not os.path.exists(os.path.dirname(args.output)):
-    os.makedirs(args.output)
+    os.makedirs(os.path.dirname(args.output))
 
 with open(args.output,"w+") as result:
-    result.write("width,height,is_grayscale,color_coverage\n")
+    result.write("path,width,height,is_grayscale,color_coverage\n")
     for root, _, files in os.walk(args.directory):
         for file in files:
             if file.lower().endswith("jpg"):
@@ -65,5 +65,5 @@ with open(args.output,"w+") as result:
                 greyscale = is_greyscale(os.path.join(root, file))
                 color_coverage = get_color_coverage(os.path.join(root, file))
                 result.write("%s,%s,%s,%r,%d\n" % (os.path.join(root, file), width, height, greyscale, color_coverage))
-print("Raport successfully generated!: " + args.output)
+print("report successfully generated!: " + args.output)
 
