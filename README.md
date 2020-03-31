@@ -61,10 +61,10 @@ Someone with windows have to chceck, maybe the same
 7. B. Or run python scripts separately
 ```
 On macOS and Linux:
-python3 google_graphics_clawler.py -q <query> -o <output-dir> -n <min-photos>
+python3 google_graphics_crawler.py -q <query> -o <output-dir> -n <min-photos>
 
 On Windows:
-py google_graphics_clawler.py -q <query> -o <output-dir> -n <min-photos>
+py google_graphics_crawler.py -q <query> -o <output-dir> -n <min-photos>
 ```
 
 8. Decativate python environment
