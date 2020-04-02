@@ -40,5 +40,6 @@ python3 generate_report.py -d ./images/crawler/slonecznik/ -o ./reports/crawler_
 # Used random color
 python3 generate_report.py -d ./images/kaggle/tulip/ -o ./reports/kaggle_tulip_150_105_25_25_25_25.csv -r 150 -rt 105 -g 25 -gt 25 -b 25 -bt 25
 python3 generate_report.py -d ./images/crawler/tulip/ -o ./reports/crawler_tulip_150_105_25_25_25_25.csv -r 150 -rt 105 -g 25 -gt 25 -b 25 -bt 25
-python3 generate_report.py -d ./images/crawler/tulipan/ -o ./reports/crawler_tulip_150_105_25_25_25_25.csv -r 150 -rt 105 -g 25 -gt 25 -b 25 -bt 25
+python3 generate_report.py -d ./images/crawler/tulipan/ -o ./reports/crawler_tulipan_150_105_25_25_25_25.csv -r 150 -rt 105 -g 25 -gt 25 -b 25 -bt 25
 
+python3 analyse_reports.py
