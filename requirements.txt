@@ -4,6 +4,7 @@ beautifulsoup4==4.8.2
 bs4==0.0.1
 certifi==2019.11.28
 chardet==3.0.4
+cycler==0.10.0
 distlib==0.3.0
 filelock==3.0.12
 gitdb==4.0.2
@@ -11,13 +12,17 @@ GitPython==3.1.0
 idna==2.9
 importlib-metadata==1.5.0
 isort==4.3.21
+kiwisolver==1.2.0
 lazy-object-proxy==1.4.3
+matplotlib==3.2.1
 mccabe==0.6.1
 numpy==1.18.2
 opencv-python==4.2.0.32
 opencv-python-headless==4.2.0.32
 Pillow==7.0.0
 pylint==2.4.4
+pyparsing==2.4.6
+python-dateutil==2.8.1
 requests==2.23.0
 rope==0.16.0
 six==1.14.0
