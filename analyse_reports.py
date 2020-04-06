@@ -52,22 +52,22 @@ ANALYSIS_PATHS = [
 
 
 class ReportAnalysis:
-    data_path = ''
-    file_path = ''
-    plot_path = ''
-    pictures_amount = 0
-    black_white_amount = 0
-    colorful_amount = 0
-    color_coverage_sum = 0.0
-    min_color_coverage = 100.0
-    max_color_coverage = 0.0
-    average_color_coverage = 0.0
-    colors = [0, 0, 0]
-    colors_tolerance = [0, 0, 0]
 
     def __init__(self, file_path, data_path=''):
         self.data_path = data_path
         self.file_path = file_path
+        self.plot_path = ''
+        self.pictures_amount = 0
+        self.black_white_amount = 0
+        self.colorful_amount = 0
+        self.color_coverages = []
+        self.min_color_coverage = 100.0
+        self.max_color_coverage = 0.0
+        self.average_color_coverage = 0.0
+        self.color_coverage_above_average_amount = 0
+        self.color_coverage_below_average_amount = 0
+        self.colors = [0, 0, 0]
+        self.colors_tolerance = [0, 0, 0]
 
         self.set_plot_path()
         if 'reports' in self.data_path:
@@ -82,16 +82,23 @@ class ReportAnalysis:
     def increase_colorful_amount(self):
         self.colorful_amount += 1
 
-    def add_to_color_coverage(self, color_coverage):
-        self.color_coverage_sum += color_coverage
-
-        if color_coverage > self.max_color_coverage:
-            self.max_color_coverage = color_coverage
-        elif color_coverage < self.min_color_coverage:
-            self.min_color_coverage = color_coverage
-
     def calculate_average_color_coverage(self):
-        self.average_color_coverage = self.color_coverage_sum / self.pictures_amount
+        color_coverage_sum = 0
+        for color_coverage in self.color_coverages:
+            color_coverage_sum += color_coverage
+
+            if color_coverage > self.max_color_coverage:
+                self.max_color_coverage = color_coverage
+            elif color_coverage < self.min_color_coverage:
+                self.min_color_coverage = color_coverage
+
+        self.average_color_coverage = color_coverage_sum / self.pictures_amount
+
+        for color_coverage in self.color_coverages:
+            if color_coverage < self.average_color_coverage:
+                self.color_coverage_below_average_amount += 1
+            elif color_coverage > self.color_coverage_above_average_amount:
+                self.color_coverage_above_average_amount += 1
 
     def set_plot_path(self):
         splitted_path = self.file_path.split('.')
@@ -122,6 +129,8 @@ class ReportAnalysis:
                 'min_color_coverage',
                 'max_color_coverage',
                 'average_color_coverage',
+                'color_coverage_above_average_amount',
+                'color_coverage_below_average_amount',
                 'red',
                 'red_tolerance',
                 'green',
@@ -136,6 +145,8 @@ class ReportAnalysis:
                 self.min_color_coverage,
                 self.max_color_coverage,
                 self.average_color_coverage,
+                self.color_coverage_above_average_amount,
+                self.color_coverage_below_average_amount,
                 self.colors[RED_INDEX],
                 self.colors_tolerance[RED_INDEX],
                 self.colors[GREEN_INDEX],
@@ -145,8 +156,12 @@ class ReportAnalysis:
             ])
 
     def save_plot(self):
-        labels = ['min color coverage', 'max color coverage', 'average color coverage']
-        values = [self.min_color_coverage, self.max_color_coverage, self.average_color_coverage]
+        labels = ['min color coverage',
+                  'max color coverage',
+                  'average color coverage']
+        values = [self.min_color_coverage,
+                  self.max_color_coverage,
+                  self.average_color_coverage]
         plt.figure(figsize=(9, 3))
         plt.bar(labels, values)
         plt.savefig(self.plot_path)
@@ -158,6 +173,8 @@ class ReportAnalysis:
               '\nbw amount: ' + str(self.black_white_amount) +
               '\ncolorful amount: ' + str(self.colorful_amount) +
               '\naverage coverage: ' + str(self.average_color_coverage) +
+              '\ncoverage above average: ' + str(self.color_coverage_above_average_amount) +
+              '\ncoverage below average: ' + str(self.color_coverage_below_average_amount) +
               '\nred: ' + str(self.colors[RED_INDEX]) +
               '\nred tolerance: ' + str(self.colors_tolerance[RED_INDEX]) +
               '\ngreen: ' + str(self.colors[GREEN_INDEX]) +
@@ -169,6 +186,9 @@ class ReportAnalysis:
 def analyse_report():
     analysis_index = 0
     analysis_of_all_data = ReportAnalysis('./analysis/all_data.csv', 'no_source')
+    analysis_of_kaggle_and_crawler_data = [
+        ReportAnalysis('./analysis/kaggle_data.csv', 'no_source'),
+        ReportAnalysis('./analysis/crawler_data.csv', 'no_source')]
     print('Analysis Started')
     for csv_file_path in REPORTS_PATHS:
         with open(csv_file_path) as csv_file:
@@ -176,16 +196,25 @@ def analyse_report():
             analysis_of_current_csv = ReportAnalysis(ANALYSIS_PATHS[analysis_index], csv_file_path)
             next(csv_reader)
             for row in csv_reader:
+                if analysis_index % 3 == 0:
+                    kaggle_and_crawler_index = 0
+                else:
+                    kaggle_and_crawler_index = 1
                 analysis_of_current_csv.increase_pictures_amount()
                 analysis_of_all_data.increase_pictures_amount()
+                analysis_of_kaggle_and_crawler_data[kaggle_and_crawler_index].increase_pictures_amount()
                 if row[IS_GRAYSCALE_INDEX] == 'True':
                     analysis_of_current_csv.increase_black_white_amount()
                     analysis_of_all_data.increase_black_white_amount()
+                    analysis_of_kaggle_and_crawler_data[kaggle_and_crawler_index].increase_black_white_amount()
                 else:
                     analysis_of_current_csv.increase_colorful_amount()
                     analysis_of_all_data.increase_colorful_amount()
-                analysis_of_current_csv.add_to_color_coverage(float(row[COLOR_COVERAGE_INDEX]))
-                analysis_of_all_data.add_to_color_coverage(float(row[COLOR_COVERAGE_INDEX]))
+                    analysis_of_kaggle_and_crawler_data[kaggle_and_crawler_index].increase_colorful_amount()
+                analysis_of_current_csv.color_coverages.append(float(row[COLOR_COVERAGE_INDEX]))
+                analysis_of_all_data.color_coverages.append(float(row[COLOR_COVERAGE_INDEX]))
+                analysis_of_kaggle_and_crawler_data[kaggle_and_crawler_index].color_coverages.append(
+                    float(row[COLOR_COVERAGE_INDEX]))
             analysis_of_current_csv.calculate_average_color_coverage()
             analysis_of_current_csv.save_as_csv()
             analysis_of_current_csv.save_plot()
@@ -194,6 +223,10 @@ def analyse_report():
     analysis_of_all_data.calculate_average_color_coverage()
     analysis_of_all_data.save_as_csv()
     analysis_of_all_data.save_plot()
+    for analysis in analysis_of_kaggle_and_crawler_data:
+        analysis.calculate_average_color_coverage()
+        analysis.save_as_csv()
+        analysis.save_plot()
     print('Analysis done!')
 
 
